@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+:root {
+  /* Light theme colors */
+  --color-blue: #1a73e8;
+  --color-blue-hover: #1557b0;
+  --color-blue-focus-bg: #e8f0fe;
+  --color-red: #ea4335;
+  --color-yellow: #fbbc04;
+  --color-green: #34a853;
+  --color-gray: #5f6368;
+  --color-gray-light: #9aa0a6;
+  --color-gray-border: #dadce0;
+  --color-gray-bg: #f8f9fa;
+  --color-gray-hover: #f1f3f4;
+  --color-text-primary: #202124;
+  --color-text-input: #3c4043;
+  --color-text-secondary: #5f6368;
+  --color-text-blue: #1967d2;
+
+  --font-sans: "Google Sans", "Roboto", system-ui, sans-serif;
+}
+
+/* Dark theme colors */
+[data-theme="dark"] {
+  --color-blue: #8ab4f8;
+  --color-blue-hover: #aecbfa;
+  --color-blue-focus-bg: #1e3a5f;
+  --color-red: #f28b82;
+  --color-yellow: #fdd663;
+  --color-green: #81c995;
+  --color-gray: #9aa0a6;
+  --color-gray-light: #5f6368;
+  --color-gray-border: #3c4043;
+  --color-gray-bg: #202124;
+  --color-gray-hover: #303134;
+  --color-text-primary: #e8eaed;
+  --color-text-input: #e8eaed;
+  --color-text-secondary: #9aa0a6;
+  --color-text-blue: #8ab4f8;
+}
+
+@theme {
+  /* colors */
+  --color-blue: var(--color-blue);
+  --color-blue-hover: var(--color-blue-hover);
+  --color-blue-focus-bg: var(--color-blue-focus-bg);
+  --color-red: var(--color-red);
+  --color-yellow: var(--color-yellow);
+  --color-green: var(--color-green);
+  --color-gray: var(--color-gray);
+  --color-gray-light: var(--color-gray-light);
+  --color-gray-border: var(--color-gray-border);
+  --color-gray-bg: var(--color-gray-bg);
+  --color-gray-hover: var(--color-gray-hover);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-input: var(--color-text-input);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-blue: var(--color-text-blue);
+
+  /* font family */
+  --font-sans: var(--font-sans);
+}
+
+@layer base {
+  html,
+  body {
+    @apply font-sans text-text-primary bg-white;
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+
+  select:focus,
+  button[aria-expanded="true"],
+  .focus-bg-blue {
+    background-color: var(--color-blue-focus-bg) !important;
+  }
+}
+
+@layer utilities {
+  .container {
+    max-width: 80rem;
+  }
+
+  .elevation-menu {
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 5px -1px,
+      rgba(0, 0, 0, 0.14) 0px 6px 10px 0px, rgba(0, 0, 0, 0.12) 0px 1px 18px 0px;
+    background-color: var(--color-gray-bg);
+    border-radius: 4px;
+    box-sizing: border-box;
+  }
+
+  /* Smooth container height transitions */
+  .multi-city-container {
+    transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .leg-row {
+    transition: all 0.3s cubic-bezier(0.3, 0, 0.2, 1);
+    animation: slideInFromTop 0.3s cubic-bezier(0.3, 0, 0.2, 1);
+    transform-origin: top;
+  }
+
+  .leg-row-removing {
+    animation: slideOutToTop 0.3s cubic-bezier(0.3, 0, 0.2, 1) forwards;
+    transform-origin: top;
+  }
+
+  @keyframes slideInFromTop {
+    0% {
+      opacity: 0;
+      transform: translateY(-30px) scaleY(0.8);
+      max-height: 0;
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0) scaleY(1);
+      max-height: 200px;
+    }
+  }
+
+  @keyframes slideOutToTop {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scaleY(1);
+      max-height: 200px;
+      margin-top: 0.75rem;
+    }
+
+    100% {
+      opacity: 0;
+      transform: translateY(-30px) scaleY(0.8);
+      max-height: 0;
+      margin-top: 0;
+    }
+  }
+
+  /* Dropdown animations */
+  .dropdown-enter {
+    animation: dropdownSlideIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dropdown-exit {
+    animation: dropdownSlideOut 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  @keyframes dropdownSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes dropdownSlideOut {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.95);
+    }
+  }
+
+  /* FAQ answer fade-in animation */
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .leg-enter {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  .leg-exit {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
