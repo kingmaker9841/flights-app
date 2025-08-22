@@ -1,3 +1,4 @@
+// RapidAPI Configuration
 export const rapidApiConfig = {
   baseUrl: import.meta.env.VITE_RAPID_API_BASE_URL,
   host: import.meta.env.VITE_RAPID_API_HOST,
@@ -29,3 +30,61 @@ export const MONTHS = [
 ];
 
 export const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+// Trip Types
+export const TRIP_TYPES = {
+  ONE_WAY: "oneway",
+  ROUND_TRIP: "roundtrip",
+  MULTI_CITY: "multicity",
+};
+
+// Cabin Classes
+export const CABIN_CLASSES = {
+  ECONOMY: "Economy",
+  PREMIUM_ECONOMY: "Premium Economy",
+  BUSINESS: "Business",
+  FIRST: "First",
+};
+
+// Navigation Items
+export const NAVIGATION_ITEMS = [
+  {
+    to: "/travel",
+    label: "Travel",
+    icon: "MapPinIcon",
+    isActive: false,
+  },
+  {
+    to: "/explore",
+    label: "Explore",
+    icon: "ExploreIcon",
+    isActive: false,
+  },
+  {
+    to: "/",
+    label: "Flights",
+    icon: "PlaneIcon",
+    isActive: true,
+  },
+  {
+    to: "/hotels",
+    label: "Hotels",
+    icon: "HotelIcon",
+    isActive: false,
+  },
+  {
+    to: "/vacation-rentals",
+    label: "Holiday rentals",
+    icon: "HouseIcon",
+    isActive: false,
+  },
+];
+
+// Placeholders
+export const PLACEHOLDERS = {
+  ORIGIN: "Where from?",
+  DESTINATION: "Where to?",
+  DATE: "Select date",
+  GETTING_LOCATION: "Getting your location...",
+  WHERE_ELSE: "Where else?",
+};

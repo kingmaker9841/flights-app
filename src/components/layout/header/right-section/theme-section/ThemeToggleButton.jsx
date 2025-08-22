@@ -1,4 +1,4 @@
-import { MoonIcon } from "../../../common/Icons";
+import { MoonIcon } from "../../../../common/Icons";
 
 const ThemeToggleButton = ({ onClick }) => {
   return (

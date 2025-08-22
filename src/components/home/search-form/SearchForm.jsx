@@ -7,6 +7,7 @@ import SearchControls from "./SearchControls";
 import SearchInputs from "./search-inputs/SearchInputs";
 import { cn } from "../../../utils/cn";
 import { searchFlights } from "../../../services/flightService";
+import { TRIP_TYPES, CABIN_CLASSES } from "../../../config/constants";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { useNearestAirport } from "../../../hooks/useNearestAirport";
@@ -16,7 +17,7 @@ function SearchForm() {
   const searchFormRef = useRef(null);
 
   // Form state
-  const [tripType, setTripType] = useState("roundtrip");
+  const [tripType, setTripType] = useState(TRIP_TYPES.ROUND_TRIP);
   const [departDate, setDepartDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [adults, setAdults] = useState(1);
@@ -24,7 +25,7 @@ function SearchForm() {
   const [infantsSeat, setInfantsSeat] = useState(0);
   const [infantsLap, setInfantsLap] = useState(0);
   const passengers = adults + children + infantsSeat + infantsLap;
-  const [cabin, setCabin] = useState("Economy");
+  const [cabin, setCabin] = useState(CABIN_CLASSES.ECONOMY);
 
   // Multi-city state
   const [legs, setLegs] = useState([
@@ -74,7 +75,7 @@ function SearchForm() {
   const canSearch = (() => {
     if (mutation.isPending) return false;
     
-    if (tripType === "multicity") {
+    if (tripType === TRIP_TYPES.MULTI_CITY) {
       return legs.every(leg => {
         const hasFrom = leg.from && typeof leg.from === 'string' && leg.from.trim() !== '';
         const hasTo = leg.to && typeof leg.to === 'string' && leg.to.trim() !== '';
@@ -86,7 +87,7 @@ function SearchForm() {
     const hasOrigin = (originSelected || (originInput && originInput.trim() !== ''));
     const hasDestination = (destSelected || (destInput && destInput.trim() !== ''));
     const hasDepartDate = departDate && departDate !== '';
-    const hasReturnDate = tripType === 'roundtrip' ? (returnDate && returnDate !== '') : true;
+    const hasReturnDate = tripType === TRIP_TYPES.ROUND_TRIP ? (returnDate && returnDate !== '') : true;
     
     return hasOrigin && hasDestination && hasDepartDate && hasReturnDate;
   })();
@@ -95,7 +96,7 @@ function SearchForm() {
     e.preventDefault();
     if (!canSearch) return;
     
-    if (tripType === "multicity") {
+    if (tripType === TRIP_TYPES.MULTI_CITY) {
       mutation.mutate({
         legs,
         passengers,
@@ -107,7 +108,7 @@ function SearchForm() {
         origin: originSelected || originInput,
         destination: destSelected || destInput,
         departDate,
-        returnDate: tripType === "roundtrip" ? returnDate : null,
+        returnDate: tripType === TRIP_TYPES.ROUND_TRIP ? returnDate : null,
         passengers,
         cabin,
         tripType,
@@ -123,7 +124,7 @@ function SearchForm() {
           className={cn(
             "bg-gray-bg rounded-none pb-8 md:rounded-[8px] overflow-visible relative border-0 md:border border-gray-border md:mx-0",
             {
-              "pb-2 px-4": tripType === "multicity",
+              "pb-2 px-4": tripType === TRIP_TYPES.MULTI_CITY,
             }
           )}
           style={{
@@ -148,7 +149,7 @@ function SearchForm() {
           />
 
           {/* Round trip and One-way layouts */}
-          {tripType !== "multicity" && (
+          {tripType !== TRIP_TYPES.MULTI_CITY && (
             <SearchInputs
               tripType={tripType}
               setTripType={setTripType}
@@ -179,7 +180,7 @@ function SearchForm() {
           )}
 
           {/* Multi-city flights */}
-          {tripType === "multicity" && (
+          {tripType === TRIP_TYPES.MULTI_CITY && (
             <MulticitySection
               legs={legs}
               setLegs={setLegs}
@@ -194,7 +195,7 @@ function SearchForm() {
         <SearchButton canSearch={canSearch} isPending={mutation.isPending} />
 
         {/* Custom Date Picker for multicity */}
-        {tripType === "multicity" && (
+        {tripType === TRIP_TYPES.MULTI_CITY && (
           <CustomDatePicker
             isOpen={showCustomPicker}
             onClose={() => setShowCustomPicker(false)}
@@ -202,7 +203,7 @@ function SearchForm() {
             setDepartDate={setDepartDate}
             returnDate={returnDate}
             setReturnDate={setReturnDate}
-            tripType="oneway"
+            tripType={TRIP_TYPES.ONE_WAY}
             setTripType={() => {}}
             searchFormRef={searchFormRef}
           />

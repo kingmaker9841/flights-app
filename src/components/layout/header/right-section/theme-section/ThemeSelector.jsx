@@ -1,7 +1,7 @@
 import ThemeDropdown from "./ThemeDropdown";
 import ThemeToggleButton from "./ThemeToggleButton";
-import { useDropdown } from "../../../../hooks/useDropdown";
-import { useTheme } from "../../../../hooks/useTheme";
+import { useDropdown } from "../../../../../hooks/useDropdown";
+import { useTheme } from "../../../../../hooks/useTheme";
 
 function ThemeSelector() {
   const { theme, setTheme, themes } = useTheme();

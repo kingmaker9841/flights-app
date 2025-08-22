@@ -1,4 +1,4 @@
-import { CheckIcon } from "../../../common/Icons";
+import { CheckIcon } from "../../../../common/Icons";
 
 const ThemeOption = ({ themeOption, isSelected, onSelect }) => {
   return (
