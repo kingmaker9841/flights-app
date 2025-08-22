@@ -1,10 +1,12 @@
 import { CloseIcon } from "../../common/Icons";
 import DateInput from "../../common/inputs/DateInput";
 import LocationInput from "../../common/inputs/LocationInput";
-import { searchAirports } from "../../../api/airports";
+import { searchAirports, getNearByAirports } from "../../../api/airports";
 import { useAirportSearch } from "../../../hooks/useAirportSearch";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getCurrentLocation } from "../../../services/geolocation";
+import { formatAirportForInput } from "../../../utils/airportUtils";
 
 const MulticityLeg = ({
   leg,
@@ -19,15 +21,38 @@ const MulticityLeg = ({
   const [originOptions, setOriginOptions] = useState([]);
   const [showOriginOptions, setShowOriginOptions] = useState(false);
   const [isOriginMultiSelect, setIsOriginMultiSelect] = useState(false);
-  const [selectedOriginItems] = useState([]);
+  const [selectedOriginItems, setSelectedOriginItems] = useState([]);
   const [originSelected, setOriginSelected] = useState(null);
+  const [isOriginFocused, setIsOriginFocused] = useState(false);
 
   // State for destination input
   const [destOptions, setDestOptions] = useState([]);
   const [showDestOptions, setShowDestOptions] = useState(false);
   const [isDestMultiSelect, setIsDestMultiSelect] = useState(false);
-  const [selectedDestItems] = useState([]);
+  const [selectedDestItems, setSelectedDestItems] = useState([]);
   const [destSelected, setDestSelected] = useState(null);
+  const [isDestFocused, setIsDestFocused] = useState(false);
+
+  // Load nearby airports on mount
+  useEffect(() => {
+    const loadNearbyAirports = async () => {
+      try {
+        const location = await getCurrentLocation();
+        const nearbyData = await getNearByAirports(location.lat, location.lng);
+        
+        if (nearbyData?.nearby) {
+          const formattedNearby = nearbyData.nearby.map(formatAirportForInput).filter(Boolean);
+          const nearbyOptions = [nearbyData.current, ...formattedNearby];
+          setOriginOptions(nearbyOptions);
+          setDestOptions(nearbyOptions);
+        }
+      } catch (error) {
+        console.warn("Could not load nearby airports for multicity:", error.message);
+      }
+    };
+
+    loadNearbyAirports();
+  }, []);
 
   // API queries
   const { refetch: refetchOrigin } = useQuery({
@@ -44,14 +69,15 @@ const MulticityLeg = ({
     staleTime: 5 * 60 * 1000,
   });
 
-  // Airport search hooks
+  // Airport search hooks - only when focused
   useAirportSearch(
     leg.from,
     originSelected,
     setOriginOptions,
     setShowOriginOptions,
     refetchOrigin,
-    setOriginSelected
+    setOriginSelected,
+    isOriginFocused
   );
 
   useAirportSearch(
@@ -60,12 +86,43 @@ const MulticityLeg = ({
     setDestOptions,
     setShowDestOptions,
     refetchDest,
-    setDestSelected
+    setDestSelected,
+    isDestFocused
   );
 
-  const handleOriginMultiSelect = () => {};
+  const handleOriginMultiSelect = (item) => {
+    const isSelected = selectedOriginItems.some(selected => 
+      selected.navigation?.entityId === item.navigation?.entityId
+    );
+    
+    if (isSelected) {
+      // Remove item
+      const newItems = selectedOriginItems.filter(selected => 
+        selected.navigation?.entityId !== item.navigation?.entityId
+      );
+      setSelectedOriginItems(newItems);
+    } else {
+      // Add item
+      setSelectedOriginItems([...selectedOriginItems, item]);
+    }
+  };
 
-  const handleDestMultiSelect = () => {};
+  const handleDestMultiSelect = (item) => {
+    const isSelected = selectedDestItems.some(selected => 
+      selected.navigation?.entityId === item.navigation?.entityId
+    );
+    
+    if (isSelected) {
+      // Remove item
+      const newItems = selectedDestItems.filter(selected => 
+        selected.navigation?.entityId !== item.navigation?.entityId
+      );
+      setSelectedDestItems(newItems);
+    } else {
+      // Add item
+      setSelectedDestItems([...selectedDestItems, item]);
+    }
+  };
 
   const updateLeg = (field, value) => {
     const updatedLegs = [...legs];
@@ -114,6 +171,17 @@ const MulticityLeg = ({
             setIsMultiSelect={setIsOriginMultiSelect}
             selectedItems={selectedOriginItems}
             onMultiSelect={handleOriginMultiSelect}
+            onFocus={() => setIsOriginFocused(true)}
+            onBlur={() => {
+              // Don't blur if we're in mobile mode
+              if (window.innerWidth < 768) {
+                return;
+              }
+              setTimeout(() => {
+                setIsOriginFocused(false);
+                setShowOriginOptions(false);
+              }, 150);
+            }}
             expandOnFocus={false}
             className="multicity-input"
           />
@@ -143,6 +211,17 @@ const MulticityLeg = ({
             setIsMultiSelect={setIsDestMultiSelect}
             selectedItems={selectedDestItems}
             onMultiSelect={handleDestMultiSelect}
+            onFocus={() => setIsDestFocused(true)}
+            onBlur={() => {
+              // Don't blur if we're in mobile mode
+              if (window.innerWidth < 768) {
+                return;
+              }
+              setTimeout(() => {
+                setIsDestFocused(false);
+                setShowDestOptions(false);
+              }, 150);
+            }}
             expandOnFocus={false}
             className="multicity-input"
           />
@@ -202,6 +281,17 @@ const MulticityLeg = ({
           setIsMultiSelect={setIsOriginMultiSelect}
           selectedItems={selectedOriginItems}
           onMultiSelect={handleOriginMultiSelect}
+          onFocus={() => setIsOriginFocused(true)}
+          onBlur={() => {
+            // Don't blur if we're in mobile mode
+            if (window.innerWidth < 768) {
+              return;
+            }
+            setTimeout(() => {
+              setIsOriginFocused(false);
+              setShowOriginOptions(false);
+            }, 150);
+          }}
           expandOnFocus={false}
           className="multicity-input"
         />
@@ -231,6 +321,17 @@ const MulticityLeg = ({
           setIsMultiSelect={setIsDestMultiSelect}
           selectedItems={selectedDestItems}
           onMultiSelect={handleDestMultiSelect}
+          onFocus={() => setIsDestFocused(true)}
+          onBlur={() => {
+            // Don't blur if we're in mobile mode
+            if (window.innerWidth < 768) {
+              return;
+            }
+            setTimeout(() => {
+              setIsDestFocused(false);
+              setShowDestOptions(false);
+            }, 150);
+          }}
           expandOnFocus={false}
           className="multicity-input"
         />

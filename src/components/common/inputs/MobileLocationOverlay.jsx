@@ -26,10 +26,15 @@ const MobileLocationOverlay = ({
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      // Focus input when overlay opens
-      setTimeout(() => inputRef.current?.focus(), 100);
+      // Focus input when overlay opens and trigger search if there's a value
+      setTimeout(() => {
+        inputRef.current?.focus();
+        if (value && value.length > 0) {
+          setShowOptions?.(true);
+        }
+      }, 100);
     }
-  }, [isOpen]);
+  }, [isOpen, value, setShowOptions]);
 
   useEffect(() => {
     // Prevent body scroll when overlay is open
@@ -53,10 +58,11 @@ const MobileLocationOverlay = ({
   if (!isOpen) return null;
 
   const handleInputChange = (e) => {
-    onChange(e.target.value);
+    const newValue = e.target.value;
+    onChange(newValue);
     onSelect?.(null);
     // Show options when user types
-    if (e.target.value.length > 0) {
+    if (newValue.length > 0) {
       setShowOptions?.(true);
     }
   };

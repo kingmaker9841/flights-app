@@ -90,6 +90,8 @@ const LocationInput = ({
     e.stopPropagation();
     if (options.length > 0) {
       setIsMultiSelect?.(!isMultiSelect);
+      // Keep options visible when toggling multiselect
+      setShowOptions(true);
     }
   };
 
@@ -148,6 +150,8 @@ const LocationInput = ({
               if (window.innerWidth < 768) {
                 e.target.blur();
                 setShowMobileOverlay(true);
+                setIsFocused(true); // Set focused for mobile overlay
+                onFocus?.(e);
                 return;
               }
               onFocus?.(e);
@@ -155,6 +159,10 @@ const LocationInput = ({
             }}
             onClick={handleMobileInputClick}
             onBlur={(e) => {
+              // Don't blur if mobile overlay is open
+              if (showMobileOverlay) {
+                return;
+              }
               // Only blur if not clicking on dropdown elements
               setTimeout(() => {
                 if (!containerRef.current?.contains(document.activeElement)) {
@@ -216,7 +224,11 @@ const LocationInput = ({
         createPortal(
           <MobileLocationOverlay
             isOpen={showMobileOverlay}
-            onClose={() => setShowMobileOverlay(false)}
+            onClose={() => {
+              setShowMobileOverlay(false);
+              setIsFocused(false);
+              onBlur?.();
+            }}
             type={type}
             value={value}
             onChange={onChange}

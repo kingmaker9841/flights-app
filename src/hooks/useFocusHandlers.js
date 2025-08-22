@@ -8,10 +8,11 @@ export const useFocusHandlers = (
 ) => {
   const inputRef = useRef(null);
 
-  const handleFocus = async () => {
+  const handleFocus = async (currentOptions = []) => {
     setIsFocused(true);
     setShowOptions(true);
-    if (cachedOptions && cachedOptions.length > 0) {
+    // Only set cached options if there are no current options (nearby airports)
+    if (cachedOptions && cachedOptions.length > 0 && currentOptions.length === 0) {
       setOptions(cachedOptions);
     }
   };

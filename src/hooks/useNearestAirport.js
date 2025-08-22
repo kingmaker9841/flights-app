@@ -1,4 +1,3 @@
-import { formatAirportForInput } from "../utils/airportUtils";
 import { getNearestAirport } from "../services/geolocation";
 import { useState } from "react";
 
@@ -13,9 +12,9 @@ export const useNearestAirport = (originInput, originSelected) => {
     setLocationError(null);
 
     try {
-      const result = await getNearestAirport();
+      const result = await getNearestAirport(); // result is already formatted, no need to format again
       if (result?.airport) {
-        const formattedAirport = formatAirportForInput(result.airport);
+        const formattedAirport = result.airport;
         if (formattedAirport) {
           setOriginSelected(formattedAirport);
           setOriginInput(formattedAirport.presentation.title);

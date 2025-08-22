@@ -52,7 +52,7 @@ const PassengerDropdown = ({
 
   return (
     <div
-      className={`absolute z-30 mt-2 elevation-menu w-[260px] min-[400px]:w-[320px] max-w-[calc(100vw-1rem)] right-0 min-[400px]:left-0 p-3 min-[400px]:p-4 ${
+      className={`absolute z-30 mt-2 elevation-menu w-[200px] min-[400px]:w-[220px] min-[500px]:w-[320px] max-w-[calc(100vw-1rem)] right-0 min-[400px]:left-0 p-3 min-[400px]:p-4 ${
         isAnimating ? "dropdown-exit" : "dropdown-enter"
       }`}
       role="dialog"

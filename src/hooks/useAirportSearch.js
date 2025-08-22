@@ -7,7 +7,8 @@ export const useAirportSearch = (
   setOptions,
   setShowOptions,
   refetch,
-  setSelected
+  setSelected,
+  isFocused = true
 ) => {
   const debouncedSearch = useDebounce(async () => {
     try {
@@ -25,12 +26,12 @@ export const useAirportSearch = (
   }, 250);
 
   useEffect(() => {
-    // Don't search if no input
-    if (!input || !input.trim()) {
+    // Don't search if no input or input is not focused
+    if (!input || !input.trim() || !isFocused) {
       return;
     }
 
-    // Don't search if input matches selected item (check both title and suggestionTitle)
+    // Don't search if input matches selected item
     if (
       selected &&
       (selected.presentation?.title === input ||
@@ -49,5 +50,5 @@ export const useAirportSearch = (
     }
 
     debouncedSearch();
-  }, [input, selected, debouncedSearch, setSelected]);
+  }, [input, selected, debouncedSearch, setSelected, isFocused]);
 };

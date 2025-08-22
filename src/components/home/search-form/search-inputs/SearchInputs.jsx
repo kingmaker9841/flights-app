@@ -4,7 +4,7 @@ import DesktopLayout from "./DesktopLayout";
 import MobileLayout from "./MobileLayout";
 import { searchAirports } from "../../../../api/airports";
 import { useAirportSearch } from "../../../../hooks/useAirportSearch";
-import { useFocusHandlers } from "../../../../hooks/useFocusHandlers";
+
 import { useMultiSelectHandlers } from "../../../../hooks/useMultiSelectHandlers";
 import { useQuery } from "@tanstack/react-query";
 
@@ -34,6 +34,10 @@ function SearchInputs({
   searchFormRef,
   isLoadingLocation,
   locationError,
+  selectedOriginItems,
+  setSelectedOriginItems,
+  selectedDestItems,
+  setSelectedDestItems,
 }) {
   // Refs
   const departHiddenRef = useRef(null);
@@ -43,8 +47,9 @@ function SearchInputs({
   const [showCustomPicker, setShowCustomPicker] = useState(false);
   const [isOriginMultiSelect, setIsOriginMultiSelect] = useState(false);
   const [isDestMultiSelect, setIsDestMultiSelect] = useState(false);
-  const [selectedOriginItems, setSelectedOriginItems] = useState([]);
-  const [selectedDestItems, setSelectedDestItems] = useState([]);
+  // selectedOriginItems and setSelectedOriginItems now come from props
+  const [isOriginFocused, setIsOriginFocused] = useState(false);
+  const [isDestFocused, setIsDestFocused] = useState(false);
   //   const [isOriginFocused, setIsOriginFocused] = useState(false);
   //   const [isDestFocused, setIsDestFocused] = useState(false);
 
@@ -89,35 +94,47 @@ function SearchInputs({
     updateDestInputDisplay
   );
 
-  // Focus handlers
-  const { handleFocus: handleOriginFocus, inputRef: originInputRef } =
-    useFocusHandlers(
-      cachedOriginOptions,
-      setOriginOptions,
-      setShowOriginOptions,
-      () => {},
-      originInput,
-      refetchOrigin
-    );
+  // Focus handlers - simplified to just show options
+  const originInputRef = useRef(null);
+  const destInputRef = useRef(null);
+  
+  const handleOriginFocus = () => {
+    console.log('Origin focus - options:', originOptions.length);
+    setIsOriginFocused(true);
+    setShowOriginOptions(true);
+  };
+  
+  const handleDestFocus = () => {
+    console.log('Dest focus - options:', destOptions.length);
+    setIsDestFocused(true);
+    setShowDestOptions(true);
+  };
 
-  const { handleFocus: handleDestFocus, inputRef: destInputRef } =
-    useFocusHandlers(
-      cachedDestOptions,
-      setDestOptions,
-      setShowDestOptions,
-      () => {},
-      destInput,
-      refetchDest
-    );
+  const handleOriginBlur = () => {
+    // Use timeout to allow click events to process first
+    setTimeout(() => {
+      setIsOriginFocused(false);
+      setShowOriginOptions(false);
+    }, 150);
+  };
 
-  // Search effects
+  const handleDestBlur = () => {
+    // Use timeout to allow click events to process first
+    setTimeout(() => {
+      setIsDestFocused(false);
+      setShowDestOptions(false);
+    }, 150);
+  };
+
+  // Re-enable airport search for typing queries - only when focused
   useAirportSearch(
     originInput,
     originSelected,
     setOriginOptions,
     setShowOriginOptions,
     refetchOrigin,
-    setOriginSelected
+    setOriginSelected,
+    isOriginFocused
   );
 
   useAirportSearch(
@@ -126,8 +143,24 @@ function SearchInputs({
     setDestOptions,
     setShowDestOptions,
     refetchDest,
-    setDestSelected
+    setDestSelected,
+    isDestFocused
   );
+
+  console.log('SearchInputs - originOptions length:', originOptions.length);
+  console.log('SearchInputs - isOriginFocused:', isOriginFocused);
+  console.log('SearchInputs - originInput:', originInput);
+  
+  // Add onChange debugging
+  const handleOriginInputChange = (value) => {
+    console.log('SearchInputs - origin input changed to:', value);
+    setOriginInput(value);
+  };
+  
+  const handleDestInputChange = (value) => {
+    console.log('SearchInputs - dest input changed to:', value);
+    setDestInput(value);
+  };
 
   // Update input displays when multi-select changes
   useEffect(() => {
@@ -156,7 +189,7 @@ function SearchInputs({
 
   const originProps = {
     originInput,
-    setOriginInput,
+    setOriginInput: handleOriginInputChange,
     originSelected,
     setOriginSelected,
     originOptions,
@@ -164,8 +197,22 @@ function SearchInputs({
     showOriginOptions,
     setShowOriginOptions,
     // isOriginFocused,
-    handleOriginFocus,
-    handleOriginBlur: () => {}, // Add blur handler
+    handleOriginFocus: (e) => {
+      console.log('Origin focus triggered');
+      setIsOriginFocused(true);
+      setShowOriginOptions(true);
+    },
+    handleOriginBlur: (e) => {
+      console.log('Origin blur triggered');
+      // Don't blur if we're in mobile mode - let mobile overlay handle it
+      if (window.innerWidth < 768) {
+        return;
+      }
+      setTimeout(() => {
+        setIsOriginFocused(false);
+        setShowOriginOptions(false);
+      }, 150);
+    },
     isOriginMultiSelect,
     setIsOriginMultiSelect,
     selectedOriginItems,
@@ -180,7 +227,7 @@ function SearchInputs({
 
   const destinationProps = {
     destInput,
-    setDestInput,
+    setDestInput: handleDestInputChange,
     destSelected,
     setDestSelected,
     destOptions,
@@ -188,8 +235,22 @@ function SearchInputs({
     showDestOptions,
     setShowDestOptions,
     // isDestFocused,
-    handleDestFocus,
-    handleDestBlur: () => {}, // Add blur handler
+    handleDestFocus: (e) => {
+      console.log('Dest focus triggered');
+      setIsDestFocused(true);
+      setShowDestOptions(true);
+    },
+    handleDestBlur: (e) => {
+      console.log('Dest blur triggered');
+      // Don't blur if we're in mobile mode - let mobile overlay handle it
+      if (window.innerWidth < 768) {
+        return;
+      }
+      setTimeout(() => {
+        setIsDestFocused(false);
+        setShowDestOptions(false);
+      }, 150);
+    },
     isDestMultiSelect,
     setIsDestMultiSelect,
     selectedDestItems,

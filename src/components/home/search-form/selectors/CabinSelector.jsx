@@ -13,7 +13,7 @@ function CabinSelector({ cabin, setCabin }) {
       value={cabin}
       onChange={setCabin}
       options={CABIN_OPTIONS}
-      triggerClassName="min-[390px]:px-3 px-2 max-w-[100px] min-[390px]:max-w-[120px] min-[520px]:max-w-none"
+      triggerClassName="min-[390px]:px-3 px-2 max-w-[80px] min-[390px]:max-w-[100px] min-[445px]:max-w-[120px] min-[520px]:max-w-none"
       dropdownPosition="right-0"
       minWidth="min-w-[220px]"
       aria-label="Select cabin class"

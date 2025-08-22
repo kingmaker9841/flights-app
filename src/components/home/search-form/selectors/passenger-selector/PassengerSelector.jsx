@@ -22,7 +22,7 @@ function PassengerSelector({
   }, [passengers]);
 
   return (
-    <div className="relative z-80" ref={dropdownRef}>
+    <div className="relative z-90" ref={dropdownRef}>
       <button
         type="button"
         onClick={toggleDropdown}

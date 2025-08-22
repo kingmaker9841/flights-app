@@ -11,6 +11,9 @@ import { TRIP_TYPES, CABIN_CLASSES } from "../../../config/constants";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { useNearestAirport } from "../../../hooks/useNearestAirport";
+import { getCurrentLocation } from "../../../services/geolocation";
+import { getNearByAirports } from "../../../api/airports";
+import { formatAirportForInput } from "../../../utils/airportUtils";
 
 function SearchForm() {
   const navigate = useNavigate();
@@ -45,6 +48,10 @@ function SearchForm() {
   const [destOptions, setDestOptions] = useState([]);
   const [showDestOptions, setShowDestOptions] = useState(false);
 
+  // Multiselect state
+  const [selectedOriginItems, setSelectedOriginItems] = useState([]);
+  const [selectedDestItems, setSelectedDestItems] = useState([]);
+
   const { isLoadingLocation, locationError, loadNearestAirport } =
     useNearestAirport(originInput, originSelected);
 
@@ -54,9 +61,46 @@ function SearchForm() {
     onError: (e) => console.error(e),
   });
 
-  // Auto-populate origin with nearest airport on component mount
+  // Auto-populate origin with nearest airport and nearby options on component mount
   useEffect(() => {
-    loadNearestAirport(setOriginSelected, setOriginInput);
+    const loadNearestAirportWithOptions = async () => {
+      if (originInput || originSelected) return;
+
+      try {
+        // Try to get location, but use fallback coordinates if it fails
+        let location;
+        try {
+          location = await getCurrentLocation();
+        } catch (locationError) {
+          console.log('Using fallback location (Kathmandu)');
+          location = { lat: 27.7172, lng: 85.324 };
+        }
+        
+        const nearbyData = await getNearByAirports(location.lat, location.lng);
+        console.log('Got nearby data:', nearbyData);
+        
+        if (nearbyData?.current) {
+          const formattedCurrent = formatAirportForInput(nearbyData.current);
+          setOriginSelected(formattedCurrent);
+          setOriginInput(formattedCurrent.presentation.title);
+          console.log('Set origin to:', formattedCurrent.presentation.title);
+        }
+        
+        // Set nearby airports as options for both origin and destination
+        if (nearbyData?.nearby) {
+          const formattedCurrent = formatAirportForInput(nearbyData.current);
+          const formattedNearby = nearbyData.nearby.map(formatAirportForInput).filter(Boolean);
+          const nearbyOptions = [formattedCurrent, ...formattedNearby];
+          console.log('Setting nearby options:', nearbyOptions.length, nearbyOptions);
+          setOriginOptions(nearbyOptions);
+          setDestOptions(nearbyOptions);
+        }
+      } catch (error) {
+        console.error("Failed to load nearby airports:", error);
+      }
+    };
+
+    loadNearestAirportWithOptions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -84,8 +128,8 @@ function SearchForm() {
       });
     }
     
-    const hasOrigin = (originSelected || (originInput && originInput.trim() !== ''));
-    const hasDestination = (destSelected || (destInput && destInput.trim() !== ''));
+    const hasOrigin = (originSelected || (originInput && originInput.trim() !== '') || selectedOriginItems.length > 0);
+    const hasDestination = (destSelected || (destInput && destInput.trim() !== '') || selectedDestItems.length > 0);
     const hasDepartDate = departDate && departDate !== '';
     const hasReturnDate = tripType === TRIP_TYPES.ROUND_TRIP ? (returnDate && returnDate !== '') : true;
     
@@ -176,6 +220,10 @@ function SearchForm() {
               searchFormRef={searchFormRef}
               isLoadingLocation={isLoadingLocation}
               locationError={locationError}
+              selectedOriginItems={selectedOriginItems}
+              setSelectedOriginItems={setSelectedOriginItems}
+              selectedDestItems={selectedDestItems}
+              setSelectedDestItems={setSelectedDestItems}
             />
           )}
 
