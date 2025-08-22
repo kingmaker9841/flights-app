@@ -67,6 +67,94 @@ export const mockAirportData = [
         presentation: { suggestionTitle: "LaGuardia Airport (LGA)" },
         distance: "8 miles",
       },
+      {
+        navigation: { entityId: "ewr", entityType: "AIRPORT" },
+        presentation: { suggestionTitle: "Newark Liberty International (EWR)" },
+        distance: "16 miles",
+      },
+    ],
+  },
+  {
+    navigation: {
+      entityId: "city_la",
+      relevantFlightParams: { skyId: "LAX" },
+      entityType: "CITY",
+    },
+    presentation: {
+      suggestionTitle: "Los Angeles, CA",
+      title: "Los Angeles",
+      subtitle: "California, United States",
+    },
+    airports: [
+      {
+        navigation: { entityId: "lax", entityType: "AIRPORT" },
+        presentation: {
+          suggestionTitle: "Los Angeles International (LAX)",
+        },
+        distance: "0 miles",
+      },
+      {
+        navigation: { entityId: "bur", entityType: "AIRPORT" },
+        presentation: { suggestionTitle: "Hollywood Burbank Airport (BUR)" },
+        distance: "18 miles",
+      },
+      {
+        navigation: { entityId: "lgb", entityType: "AIRPORT" },
+        presentation: { suggestionTitle: "Long Beach Airport (LGB)" },
+        distance: "22 miles",
+      },
+    ],
+  },
+  {
+    navigation: {
+      entityId: "city_chi",
+      relevantFlightParams: { skyId: "CHI" },
+      entityType: "CITY",
+    },
+    presentation: {
+      suggestionTitle: "Chicago, IL",
+      title: "Chicago",
+      subtitle: "Illinois, United States",
+    },
+    airports: [
+      {
+        navigation: { entityId: "ord", entityType: "AIRPORT" },
+        presentation: {
+          suggestionTitle: "O'Hare International Airport (ORD)",
+        },
+        distance: "17 miles",
+      },
+      {
+        navigation: { entityId: "mdw", entityType: "AIRPORT" },
+        presentation: { suggestionTitle: "Midway International Airport (MDW)" },
+        distance: "10 miles",
+      },
+    ],
+  },
+  {
+    navigation: {
+      entityId: "city_mia",
+      relevantFlightParams: { skyId: "MIA" },
+      entityType: "CITY",
+    },
+    presentation: {
+      suggestionTitle: "Miami, FL",
+      title: "Miami",
+      subtitle: "Florida, United States",
+    },
+    airports: [
+      {
+        navigation: { entityId: "mia", entityType: "AIRPORT" },
+        presentation: {
+          suggestionTitle: "Miami International Airport (MIA)",
+        },
+        distance: "0 miles",
+      },
+      {
+        navigation: { entityId: "fll", entityType: "AIRPORT" },
+        presentation: { suggestionTitle: "Fort Lauderdale-Hollywood International (FLL)" },
+        distance: "21 miles",
+      },
     ],
   },
   {
@@ -80,20 +168,130 @@ export const mockAirportData = [
       title: "Boston",
       subtitle: "Massachusetts, United States",
     },
-    airports: [],
+    airports: [
+      {
+        navigation: { entityId: "bos", entityType: "AIRPORT" },
+        presentation: {
+          suggestionTitle: "Logan International Airport (BOS)",
+        },
+        distance: "0 miles",
+      },
+    ],
   },
   {
     navigation: {
-      entityId: "lax",
-      relevantFlightParams: { skyId: "LAX" },
-      entityType: "AIRPORT",
+      entityId: "city_sea",
+      relevantFlightParams: { skyId: "SEA" },
+      entityType: "CITY",
     },
     presentation: {
-      suggestionTitle: "Los Angeles International (LAX)",
-      title: "Los Angeles",
+      suggestionTitle: "Seattle, WA",
+      title: "Seattle",
+      subtitle: "Washington, United States",
+    },
+    airports: [
+      {
+        navigation: { entityId: "sea", entityType: "AIRPORT" },
+        presentation: {
+          suggestionTitle: "Seattle-Tacoma International Airport (SEA)",
+        },
+        distance: "0 miles",
+      },
+    ],
+  },
+  {
+    navigation: {
+      entityId: "city_sf",
+      relevantFlightParams: { skyId: "SFO" },
+      entityType: "CITY",
+    },
+    presentation: {
+      suggestionTitle: "San Francisco, CA",
+      title: "San Francisco",
       subtitle: "California, United States",
     },
-    airports: [],
+    airports: [
+      {
+        navigation: { entityId: "sfo", entityType: "AIRPORT" },
+        presentation: {
+          suggestionTitle: "San Francisco International Airport (SFO)",
+        },
+        distance: "0 miles",
+      },
+      {
+        navigation: { entityId: "sjc", entityType: "AIRPORT" },
+        presentation: { suggestionTitle: "Norman Y. Mineta San José International Airport (SJC)" },
+        distance: "45 miles",
+      },
+      {
+        navigation: { entityId: "oak", entityType: "AIRPORT" },
+        presentation: { suggestionTitle: "Oakland International Airport (OAK)" },
+        distance: "11 miles",
+      },
+    ],
+  },
+  {
+    navigation: {
+      entityId: "city_vegas",
+      relevantFlightParams: { skyId: "LAS" },
+      entityType: "CITY",
+    },
+    presentation: {
+      suggestionTitle: "Las Vegas, NV",
+      title: "Las Vegas",
+      subtitle: "Nevada, United States",
+    },
+    airports: [
+      {
+        navigation: { entityId: "las", entityType: "AIRPORT" },
+        presentation: {
+          suggestionTitle: "Harry Reid International Airport (LAS)",
+        },
+        distance: "0 miles",
+      },
+    ],
+  },
+  {
+    navigation: {
+      entityId: "city_denver",
+      relevantFlightParams: { skyId: "DEN" },
+      entityType: "CITY",
+    },
+    presentation: {
+      suggestionTitle: "Denver, CO",
+      title: "Denver",
+      subtitle: "Colorado, United States",
+    },
+    airports: [
+      {
+        navigation: { entityId: "den", entityType: "AIRPORT" },
+        presentation: {
+          suggestionTitle: "Denver International Airport (DEN)",
+        },
+        distance: "0 miles",
+      },
+    ],
+  },
+  {
+    navigation: {
+      entityId: "city_atlanta",
+      relevantFlightParams: { skyId: "ATL" },
+      entityType: "CITY",
+    },
+    presentation: {
+      suggestionTitle: "Atlanta, GA",
+      title: "Atlanta",
+      subtitle: "Georgia, United States",
+    },
+    airports: [
+      {
+        navigation: { entityId: "atl", entityType: "AIRPORT" },
+        presentation: {
+          suggestionTitle: "Hartsfield-Jackson Atlanta International Airport (ATL)",
+        },
+        distance: "0 miles",
+      },
+    ],
   },
 ];
 

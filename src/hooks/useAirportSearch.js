@@ -1,31 +1,6 @@
 import { useDebounce } from "./useDebounce";
 import { useEffect } from "react";
 
-// export const useAirportSearch = (
-//   input,
-//   selected,
-//   setOptions,
-//   setShowOptions,
-//   refetch
-// ) => {
-//   const debouncedSearch = useDebounce(async () => {
-//     try {
-//       const { data } = await refetch();
-//       if (data) {
-//         setOptions(data);
-//         setShowOptions(true);
-//       }
-//     } catch (e) {
-//       console.error("Airport search error:", e);
-//     }
-//   }, 250);
-
-//   useEffect(() => {
-//     if (!input || selected?.presentation?.suggestionTitle === input) return;
-//     debouncedSearch();
-//   }, [input, selected, setOptions, setShowOptions, refetch, debouncedSearch]);
-// };
-
 export const useAirportSearch = (
   input,
   selected,
@@ -37,7 +12,6 @@ export const useAirportSearch = (
   const debouncedSearch = useDebounce(async () => {
     try {
       const { data } = await refetch();
-      console.log("Refetch completed, data:", data);
       if (data) {
         setOptions(data);
         setShowOptions(true);
@@ -51,11 +25,29 @@ export const useAirportSearch = (
   }, 250);
 
   useEffect(() => {
-    if (input && selected && selected.presentation?.title !== input) {
+    // Don't search if no input
+    if (!input || !input.trim()) {
+      return;
+    }
+
+    // Don't search if input matches selected item (check both title and suggestionTitle)
+    if (
+      selected &&
+      (selected.presentation?.title === input ||
+        selected.presentation?.suggestionTitle === input)
+    ) {
+      return;
+    }
+
+    // Clear selected if input doesn't match and start searching
+    if (
+      selected &&
+      selected.presentation?.title !== input &&
+      selected.presentation?.suggestionTitle !== input
+    ) {
       setSelected(null);
     }
-    if (!input || selected?.presentation?.title === input) return;
-    console.log("useAirportSearch triggered for input:", input);
+
     debouncedSearch();
   }, [input, selected, debouncedSearch, setSelected]);
 };

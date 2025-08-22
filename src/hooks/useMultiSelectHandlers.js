@@ -18,16 +18,10 @@ export const useMultiSelectHandlers = () => {
     };
 
   const createInputDisplayUpdater = (selectedItems, setInput) => () => {
+    // Don't update input display when items are selected in multi-select mode
+    // The chips will show the selected items instead
     if (selectedItems.length === 0) {
       setInput("");
-    } else if (selectedItems.length === 1) {
-      setInput(
-        selectedItems[0].presentation?.title ||
-          selectedItems[0].presentation?.suggestionTitle ||
-          ""
-      );
-    } else {
-      setInput(`${selectedItems.length} airports selected`);
     }
   };
 

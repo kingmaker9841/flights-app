@@ -8,7 +8,7 @@ const DropdownContainer = ({ show, isFocused, children, ref }) => {
       ref={ref}
       className={cn(
         `absolute left-0 top-full z-40 ${
-          isFocused ? "w-[150%] rounded-tr-none rounded-tl-none" : "right-0"
+          isFocused ? "sm:w-[150%] w-[120%] rounded-tr-none rounded-tl-none" : "right-0"
         }`
       )}
     >

@@ -11,11 +11,11 @@ const MultiSelectToggle = ({
 }) => (
   <button
     type="button"
-    onClick={onToggle}
+    onMouseDown={onToggle}
     disabled={disabled}
     ref={toggleRef}
     className={cn(
-      `ml-2 p-1 rounded transition-all duration-200 ${
+      `ml-2 p-1 mt-1 rounded transition-all duration-200 ${
         isMultiSelect
           ? "bg-blue text-white hover:bg-blue-hover"
           : "hover:bg-gray-hover"

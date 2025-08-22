@@ -5,6 +5,9 @@
   --color-blue: #1a73e8;
   --color-blue-hover: #1557b0;
   --color-blue-focus-bg: #e8f0fe;
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-200: #bfdbfe;
   --color-red: #ea4335;
   --color-yellow: #fbbc04;
   --color-green: #34a853;
@@ -17,6 +20,7 @@
   --color-text-input: #3c4043;
   --color-text-secondary: #5f6368;
   --color-text-blue: #1967d2;
+  --color-primary: #ffffff;
 
   --font-sans: "Google Sans", "Roboto", system-ui, sans-serif;
 }
@@ -26,6 +30,9 @@
   --color-blue: #8ab4f8;
   --color-blue-hover: #aecbfa;
   --color-blue-focus-bg: #1e3a5f;
+  --color-blue-50: #1e293b;
+  --color-blue-100: #334155;
+  --color-blue-200: #475569;
   --color-red: #f28b82;
   --color-yellow: #fdd663;
   --color-green: #81c995;
@@ -38,6 +45,7 @@
   --color-text-input: #e8eaed;
   --color-text-secondary: #9aa0a6;
   --color-text-blue: #8ab4f8;
+  --color-primary: #303134;
 }
 
 @theme {
@@ -45,6 +53,9 @@
   --color-blue: var(--color-blue);
   --color-blue-hover: var(--color-blue-hover);
   --color-blue-focus-bg: var(--color-blue-focus-bg);
+  --color-blue-50: var(--color-blue-50);
+  --color-blue-100: var(--color-blue-100);
+  --color-blue-200: var(--color-blue-200);
   --color-red: var(--color-red);
   --color-yellow: var(--color-yellow);
   --color-green: var(--color-green);
@@ -57,6 +68,7 @@
   --color-text-input: var(--color-text-input);
   --color-text-secondary: var(--color-text-secondary);
   --color-text-blue: var(--color-text-blue);
+  --color-primary: var(--color-primary);
 
   /* font family */
   --font-sans: var(--font-sans);

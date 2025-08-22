@@ -19,15 +19,16 @@ const CityItem = ({
     e.preventDefault();
     e.stopPropagation();
     if (isMultiSelect) {
-      console.log("Toggling selection:", city.navigation?.entityId);
       onItemClick(city);
-    } else if (hasAirports) {
-      console.log("Expanding city:", city.navigation?.entityId);
-      onToggleExpansion();
     } else {
-      console.log("Selecting city:", city.navigation?.entityId);
       onItemClick(city);
     }
+  };
+
+  const handleChevronClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onToggleExpansion();
   };
 
   const handleChevronMouseDown = (e) => {
@@ -37,8 +38,6 @@ const CityItem = ({
 
   const handleCheckboxChange = (e) => {
     e.stopPropagation();
-    onItemClick(city);
-    console.log("Checkbox clicked, selecting:", city.navigation?.entityId);
     onItemClick(city);
   };
 
@@ -63,17 +62,22 @@ const CityItem = ({
             {city.presentation?.subtitle}
           </div>
         </div>
-
-        {hasAirports && (
-          <div className="ml-2" onMouseDown={handleChevronMouseDown}>
-            {isExpanded ? (
-              <ChevronUpIcon className="w-4 h-4 text-text-secondary" />
-            ) : (
-              <ChevronDownIcon className="w-4 h-4 text-text-secondary" />
-            )}
-          </div>
-        )}
       </button>
+
+      {hasAirports && (
+        <button
+          type="button"
+          className="px-2 py-3 hover:bg-gray-hover"
+          onClick={handleChevronClick}
+          onMouseDown={handleChevronMouseDown}
+        >
+          {isExpanded ? (
+            <ChevronUpIcon className="w-4 h-4 text-text-secondary" />
+          ) : (
+            <ChevronDownIcon className="w-4 h-4 text-text-secondary" />
+          )}
+        </button>
+      )}
     </div>
   );
 };

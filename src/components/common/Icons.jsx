@@ -1,11 +1,5 @@
 import { cn } from "../../utils/cn";
 
-// ExploreIcon,
-// HotelIcon,
-// HouseIcon,
-// MapPinIcon,
-// PlaneIcon,
-
 export const MapPinIcon = ({
   className,
   size,
@@ -355,6 +349,36 @@ export const BackArrowIcon = ({
 }) => (
   <svg className={className} fill={color} viewBox="0 0 24 24" {...props}>
     <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+  </svg>
+);
+
+export const ArrowLeftIcon = ({
+  className,
+  size,
+  color,
+  "aria-label": ariaLabel = "Back",
+  "aria-hidden": ariaHidden = false,
+  ...props
+}) => (
+  <svg
+    className={cn("w-6 h-6 text-text-primary", className)}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={color || "currentColor"}
+    strokeWidth={2}
+    width={size}
+    height={size}
+    aria-label={ariaLabel}
+    aria-hidden={ariaHidden}
+    focusable={false}
+    role={ariaLabel ? "img" : undefined}
+    {...props}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M19 12H5m7-7l-7 7 7 7"
+    />
   </svg>
 );
 

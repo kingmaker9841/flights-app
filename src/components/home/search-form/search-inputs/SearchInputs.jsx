@@ -165,6 +165,7 @@ function SearchInputs({
     setShowOriginOptions,
     // isOriginFocused,
     handleOriginFocus,
+    handleOriginBlur: () => {}, // Add blur handler
     isOriginMultiSelect,
     setIsOriginMultiSelect,
     selectedOriginItems,
@@ -188,6 +189,7 @@ function SearchInputs({
     setShowDestOptions,
     // isDestFocused,
     handleDestFocus,
+    handleDestBlur: () => {}, // Add blur handler
     isDestMultiSelect,
     setIsDestMultiSelect,
     selectedDestItems,

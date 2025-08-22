@@ -1,12 +1,53 @@
-# React + Vite
+# Flight Search App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Prerequisites
 
-Currently, two official plugins are available:
+- Node.js version 22 or higher
+- npm package manager
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Setup Instructions
 
-## Expanding the ESLint configuration
+### 1. Clone the repository
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+git clone <your-repo-url>
+cd <your-repo-name>
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure API Keys
+
+1. Visit [RapidAPI](https://rapidapi.com/) and create an account
+2. Subscribe to the [Sky Scrapper API](https://rapidapi.com/apiheya/api/sky-scrapper)
+3. Get your API credentials from the API dashboard
+
+### 4. Environment Setup
+
+Create a `.env` file in the root directory and add your API credentials:
+
+```env
+VITE_RAPID_API_KEY=your_api_key_here
+VITE_RAPID_API_HOST=your_api_host_here
+VITE_RAPID_API_BASE_URL=your_api_base_url_here
+```
+
+### 5. Start the development server
+
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:5173` (or the port shown in your terminal).
+
+## Additional Scripts
+
+```bash
+npm run build    # Build for production
+npm run preview  # Preview production build
+npm run lint     # Run linter
+```

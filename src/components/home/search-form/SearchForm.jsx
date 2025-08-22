@@ -6,7 +6,6 @@ import SearchButton from "../../common/buttons/SearchButton";
 import SearchControls from "./SearchControls";
 import SearchInputs from "./search-inputs/SearchInputs";
 import { cn } from "../../../utils/cn";
-import { mockAirportData } from "../../../utils/mockData";
 import { searchFlights } from "../../../services/flightService";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
@@ -30,7 +29,6 @@ function SearchForm() {
   // Multi-city state
   const [legs, setLegs] = useState([
     { from: "", to: "", date: "" },
-    { from: "", to: "", date: "" },
   ]);
   const [showCustomPicker, setShowCustomPicker] = useState(false);
   const [removingLegIndex, setRemovingLegIndex] = useState(null);
@@ -38,7 +36,7 @@ function SearchForm() {
   // Origin/Destination state
   const [originInput, setOriginInput] = useState("");
   const [originSelected, setOriginSelected] = useState(null);
-  const [originOptions, setOriginOptions] = useState(mockAirportData);
+  const [originOptions, setOriginOptions] = useState([]);
   const [showOriginOptions, setShowOriginOptions] = useState(false);
 
   const [destInput, setDestInput] = useState("");
@@ -73,23 +71,48 @@ function SearchForm() {
     }, 300);
   };
 
-  const canSearch =
-    !!(originSelected || originInput) &&
-    !!(destSelected || destInput) &&
-    !!departDate &&
-    !mutation.isPending;
+  const canSearch = (() => {
+    if (mutation.isPending) return false;
+    
+    if (tripType === "multicity") {
+      return legs.every(leg => {
+        const hasFrom = leg.from && typeof leg.from === 'string' && leg.from.trim() !== '';
+        const hasTo = leg.to && typeof leg.to === 'string' && leg.to.trim() !== '';
+        const hasDate = leg.date && leg.date !== '';
+        return hasFrom && hasTo && hasDate;
+      });
+    }
+    
+    const hasOrigin = (originSelected || (originInput && originInput.trim() !== ''));
+    const hasDestination = (destSelected || (destInput && destInput.trim() !== ''));
+    const hasDepartDate = departDate && departDate !== '';
+    const hasReturnDate = tripType === 'roundtrip' ? (returnDate && returnDate !== '') : true;
+    
+    return hasOrigin && hasDestination && hasDepartDate && hasReturnDate;
+  })();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!canSearch) return;
-    mutation.mutate({
-      origin: originSelected || originInput,
-      destination: destSelected || destInput,
-      departDate,
-      returnDate: tripType === "roundtrip" ? returnDate : null,
-      passengers,
-      cabin,
-    });
+    
+    if (tripType === "multicity") {
+      mutation.mutate({
+        legs,
+        passengers,
+        cabin,
+        tripType,
+      });
+    } else {
+      mutation.mutate({
+        origin: originSelected || originInput,
+        destination: destSelected || destInput,
+        departDate,
+        returnDate: tripType === "roundtrip" ? returnDate : null,
+        passengers,
+        cabin,
+        tripType,
+      });
+    }
   };
 
   return (

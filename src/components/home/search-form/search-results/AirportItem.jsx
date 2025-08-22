@@ -7,11 +7,17 @@ const AirportItem = ({ airport, isMultiSelect, isSelected, onItemClick }) => {
     onItemClick(airport);
   };
 
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onItemClick(airport);
+  };
+
   return (
     <button
       type="button"
       className="w-full flex items-center px-4 py-3 pl-8 text-left hover:bg-gray-hover"
-      onClick={() => onItemClick(airport)}
+      onClick={handleClick}
     >
       {isMultiSelect && (
         <CheckboxInput checked={isSelected} onChange={handleCheckboxChange} />
