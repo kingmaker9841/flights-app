@@ -1,4 +1,4 @@
-import { CloseIcon } from "../../../../common/Icons";
+import { CloseIcon } from "./Icons";
 
 const SelectedItemChips = ({ selectedItems, onRemove, className = "" }) => {
   if (!selectedItems || selectedItems.length === 0) return null;

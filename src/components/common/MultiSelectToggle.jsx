@@ -1,6 +1,6 @@
-import { CheckIcon, PlusIcon } from "../../../../../common/Icons";
+import { CheckIcon, PlusIcon } from "./Icons";
 
-import { cn } from "../../../../../../utils/cn";
+import { cn } from "../../utils/cn";
 
 const MultiSelectToggle = ({
   isMultiSelect,

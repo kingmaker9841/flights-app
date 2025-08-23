@@ -1,4 +1,4 @@
-import { SpinnerIcon } from "../../../../../common/Icons";
+import { SpinnerIcon } from "./Icons";
 
 const LoadingSpinner = ({ isLoading }) => {
   if (!isLoading) return null;

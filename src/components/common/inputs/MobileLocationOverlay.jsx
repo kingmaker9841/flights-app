@@ -2,7 +2,7 @@ import { ArrowLeftIcon, CheckIcon, PlusIcon } from "../Icons";
 import { useEffect, useRef } from "react";
 
 import AirportDropdown from "../../home/search-form/search-results/AirportDropdown";
-import SelectedItemChips from "../../home/search-form/search-inputs/multi-select-inputs/SelectedItemChips";
+import SelectedItemChips from "../SelectedItemChips";
 import { cn } from "../../../utils/cn";
 
 const MobileLocationOverlay = ({

@@ -2,11 +2,11 @@ import { CircleIcon, LocationIcon } from "../Icons";
 import { useCallback, useRef, useState } from "react";
 
 import AirportDropdown from "../../home/search-form/search-results/AirportDropdown";
-import LoadingSpinner from "../../home/search-form/search-inputs/multi-select-inputs/origin/LoadingSpinner";
+import LoadingSpinner from "../LoadingSpinner";
 import MobileLocationOverlay from "./MobileLocationOverlay";
-import MultiSelectToggle from "../../home/search-form/search-inputs/multi-select-inputs/origin/MultiSelectToggle";
+import MultiSelectToggle from "../MultiSelectToggle";
 import { ORIGIN_OR_DESTINATION } from "../../../config/constants";
-import SelectedItemChips from "../../home/search-form/search-inputs/multi-select-inputs/SelectedItemChips";
+import SelectedItemChips from "../SelectedItemChips";
 import { cn } from "../../../utils/cn";
 import { createPortal } from "react-dom";
 import { useClickOutside } from "../../../hooks/useClickOutside";

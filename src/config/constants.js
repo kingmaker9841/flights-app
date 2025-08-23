@@ -14,6 +14,15 @@ export const rapidApiConfig = {
   searchFlightsWebComplete: "/api/v1/flights/searchFlightEverywhereDetails",
 };
 
+export const amadeusConfig = {
+  baseUrl: import.meta.env.VITE_AMADEUS_BASE_URL,
+  host: import.meta.env.VITE_AMADEUS_HOST,
+  apiKey: import.meta.env.VITE_AMADEUS_API_KEY,
+  secret: import.meta.env.VITE_AMADEUS_API_SECRET,
+  grantType: "client_credentials",
+  accessTokenUrl: "/v1/security/oauth2/token",
+};
+
 export const MONTHS = [
   "January",
   "February",
