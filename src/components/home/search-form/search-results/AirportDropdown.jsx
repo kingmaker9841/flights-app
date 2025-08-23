@@ -3,29 +3,47 @@ import LoadingIndicator from "./LoadingIndicator";
 import NoResultsMessage from "./NoResultsMessage";
 import { cn } from "../../../../utils/cn";
 import { useAirportGrouping } from "../../../../hooks/useAirportGrouping";
-import { useExpandedCities } from "../../../../hooks/useExpandedCities";
-import { useItemSelection } from "../../../../hooks/useItemSelection";
+import { SearchResultsProvider, useSearchResultsContext } from "../../../../context/SearchResultsContext";
 
-function AirportDropdown({
+function AirportDropdownContent({
   options = [],
   onSelect,
   onClose,
-  isMultiSelect = true,
-  selectedItems = [],
   onMultiSelect,
+  isMultiSelect: parentIsMultiSelect = false,
+  selectedItems: parentSelectedItems = [],
   className = "",
   isLoading = false,
   ref,
 }) {
-  const { expandedCities, toggleCityExpansion } = useExpandedCities();
+  const {
+    expandedCities,
+    toggleCityExpansion,
+    isItemSelected,
+    handleItemSelection,
+  } = useSearchResultsContext();
+  
+  // Use parent state for multiselect
+  const isMultiSelect = parentIsMultiSelect;
+  const selectedItems = parentSelectedItems;
+  
   const groupedOptions = useAirportGrouping(options);
-  const { handleItemClick, isItemSelected } = useItemSelection(
-    isMultiSelect,
-    selectedItems,
-    onSelect,
-    onClose,
-    onMultiSelect
-  );
+  
+  const handleItemClick = (item) => {
+    if (isMultiSelect) {
+      onMultiSelect?.(item);
+    } else {
+      onSelect?.(item);
+      onClose?.();
+    }
+  };
+  
+  // Override isItemSelected to use parent selectedItems
+  const checkIsItemSelected = (item) => {
+    return selectedItems.some(selected => 
+      selected.navigation?.entityId === item.navigation?.entityId
+    );
+  };
 
   return (
     <div
@@ -48,18 +66,24 @@ function AirportDropdown({
           cityKey={cityKey}
           city={city}
           airports={airports}
+          onItemClick={handleItemClick}
           isMultiSelect={isMultiSelect}
           selectedItems={selectedItems}
-          expandedCities={expandedCities}
-          onItemClick={handleItemClick}
-          onToggleExpansion={toggleCityExpansion}
-          isItemSelected={isItemSelected}
+          checkIsItemSelected={checkIsItemSelected}
         />
       ))}
 
       {/* No results message */}
       {!isLoading && options.length === 0 && <NoResultsMessage />}
     </div>
+  );
+}
+
+function AirportDropdown(props) {
+  return (
+    <SearchResultsProvider>
+      <AirportDropdownContent {...props} />
+    </SearchResultsProvider>
   );
 }
 

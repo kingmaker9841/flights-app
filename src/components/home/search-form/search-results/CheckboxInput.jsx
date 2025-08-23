@@ -1,3 +1,5 @@
+import { Checkbox } from "../../../ui";
+
 const CheckboxInput = ({ checked, onChange, className = "" }) => {
   const handleChange = (e) => {
     e.stopPropagation();
@@ -9,12 +11,11 @@ const CheckboxInput = ({ checked, onChange, className = "" }) => {
   };
 
   return (
-    <input
-      type="checkbox"
+    <Checkbox
       checked={checked}
       onChange={handleChange}
       onClick={handleClick}
-      className={`mr-3 h-4 w-4 text-blue rounded border-gray-border ${className}`}
+      className={`mr-3 ${className}`}
     />
   );
 };

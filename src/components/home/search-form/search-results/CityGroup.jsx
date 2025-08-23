@@ -1,17 +1,21 @@
 import AirportItem from "./AirportItem";
 import CityItem from "./CityItem";
+import { useSearchResultsContext } from "../../../../context/SearchResultsContext";
 
 const CityGroup = ({
   cityKey,
   city,
   airports,
-  isMultiSelect,
-  //   selectedItems,
-  expandedCities,
   onItemClick,
-  onToggleExpansion,
-  isItemSelected,
+  isMultiSelect,
+  selectedItems,
+  checkIsItemSelected,
 }) => {
+  const {
+    expandedCities,
+    toggleCityExpansion,
+  } = useSearchResultsContext();
+  
   const cityId = city.navigation?.entityId || cityKey;
   const isExpanded = expandedCities.has(cityId);
   const hasAirports = airports.length > 0;
@@ -21,11 +25,11 @@ const CityGroup = ({
       <CityItem
         city={city}
         isMultiSelect={isMultiSelect}
-        isSelected={isItemSelected(city)}
+        isSelected={checkIsItemSelected(city)}
         hasAirports={hasAirports}
         isExpanded={isExpanded}
         onItemClick={onItemClick}
-        onToggleExpansion={() => onToggleExpansion(cityId)}
+        onToggleExpansion={() => toggleCityExpansion(cityId)}
       />
 
       {hasAirports && isExpanded && (
@@ -38,7 +42,7 @@ const CityGroup = ({
               }
               airport={airport}
               isMultiSelect={isMultiSelect}
-              isSelected={isItemSelected(airport)}
+              isSelected={checkIsItemSelected(airport)}
               onItemClick={onItemClick}
             />
           ))}

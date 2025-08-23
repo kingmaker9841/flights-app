@@ -1,16 +1,21 @@
-import { SwapIcon } from "../Icons"; // Import the new SwapIcon
+import { SwapIcon } from "../Icons";
+import { useSearchContext } from "../../../context/SearchContext";
+import Button from "../../ui/button/Button";
 
-export default function SwapButton({ swap }) {
+export default function SwapButton() {
+  const { swapLocations } = useSearchContext();
+  
   return (
     <div className="absolute -right-5 top-1/2 -translate-y-1/2 z-20">
-      <button
-        type="button"
-        onClick={swap}
-        className="w-10 h-10 bg-gray-bg border border-gray-border rounded-full flex items-center justify-center hover:bg-gray-hover transition-colors duration-200"
+      <Button
+        variant="secondary"
+        size="sm"
+        onClick={swapLocations}
+        className="w-10 h-10 p-0 rounded-full"
         aria-label="Swap origin and destination"
       >
         <SwapIcon className="w-5 h-5 text-text-secondary" />
-      </button>
+      </Button>
     </div>
   );
 }

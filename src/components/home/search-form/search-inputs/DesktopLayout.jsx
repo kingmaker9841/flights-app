@@ -6,7 +6,7 @@ import { cn } from "../../../../utils/cn";
 import { useSearchContext } from "../../../../context/SearchContext";
 
 const DesktopLayout = ({ dateProps }) => {
-  const { isOriginFocused, swapLocations } = useSearchContext();
+  const { isOriginFocused } = useSearchContext();
 
   return (
     <div className="hidden md:grid grid-cols-[1fr_1fr_1.4fr] gap-3 overflow-visible">
@@ -16,7 +16,7 @@ const DesktopLayout = ({ dateProps }) => {
         })}
       >
         <ContextLocationInput type={ORIGIN_OR_DESTINATION.ORIGIN} />
-        <SwapButton swap={swapLocations} />
+        <SwapButton />
       </div>
       <ContextLocationInput type={ORIGIN_OR_DESTINATION.DESTINATION} />
       <DateInputs {...dateProps} />

@@ -1,15 +1,18 @@
 import { MoonIcon } from "../../../../common/Icons";
+import { Button } from "../../../../ui";
 
 const ThemeToggleButton = ({ onClick }) => {
   return (
-    <button
-      className="p-2 rounded-full hover:bg-gray-bg"
-      title="Choose theme"
+    <Button
+      variant="ghost"
+      size="sm"
       onClick={onClick}
+      className="p-2 rounded-full"
+      title="Choose theme"
       aria-label="Open theme selector"
     >
       <MoonIcon />
-    </button>
+    </Button>
   );
 };
 

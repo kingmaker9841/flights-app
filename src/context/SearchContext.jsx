@@ -67,9 +67,11 @@ export const SearchProvider = ({ children }) => {
   const passengers = adults + childrenCount + infantsSeat + infantsLap;
 
   // Auto-populate origin with nearest airport on mount
+  const [hasLoadedInitialLocation, setHasLoadedInitialLocation] = useState(false);
+  
   useEffect(() => {
     const loadNearestAirportWithOptions = async () => {
-      if (originInput || originSelected) return;
+      if (originInput || originSelected || hasLoadedInitialLocation) return;
 
       setIsLoadingLocation(true);
       try {
@@ -103,6 +105,7 @@ export const SearchProvider = ({ children }) => {
         setLocationError(error.message);
       } finally {
         setIsLoadingLocation(false);
+        setHasLoadedInitialLocation(true);
       }
     };
 
