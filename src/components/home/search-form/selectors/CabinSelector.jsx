@@ -1,4 +1,5 @@
 import DropdownSelect from "../../../common/DropdownSelect";
+import { useSearchContext } from "../../../../context/SearchContext";
 
 const CABIN_OPTIONS = [
   { value: "Economy", label: "Economy" },
@@ -7,7 +8,8 @@ const CABIN_OPTIONS = [
   { value: "First", label: "First" },
 ];
 
-function CabinSelector({ cabin, setCabin }) {
+function CabinSelector() {
+  const { cabin, setCabin } = useSearchContext();
   return (
     <DropdownSelect
       value={cabin}

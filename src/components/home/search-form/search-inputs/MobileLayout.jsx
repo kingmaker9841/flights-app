@@ -1,12 +1,12 @@
+import ContextLocationInput from "../../../common/inputs/ContextLocationInput";
 import DateInputs from "./date-select-input/DateInputs";
-import DestinationSearch from "./multi-select-inputs/destination/DestinationSearch";
-import OriginSearch from "./multi-select-inputs/origin/OriginSearch";
+import { ORIGIN_OR_DESTINATION } from "../../../../config/constants";
 
-const MobileLayout = ({ originProps, destinationProps, dateProps }) => (
+const MobileLayout = ({ dateProps }) => (
   <div className="md:hidden space-y-3">
     <div className="grid grid-cols-2 gap-3">
-      <OriginSearch {...originProps} />
-      <DestinationSearch {...destinationProps} />
+      <ContextLocationInput type={ORIGIN_OR_DESTINATION.ORIGIN} />
+      <ContextLocationInput type={ORIGIN_OR_DESTINATION.DESTINATION} />
     </div>
     <DateInputs {...dateProps} />
   </div>

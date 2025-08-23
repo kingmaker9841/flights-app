@@ -1,6 +1,8 @@
 import { SearchIcon } from "../Icons";
+import { useSearchContext } from "../../../context/SearchContext";
 
-const SearchButton = ({ canSearch, isPending }) => {
+const SearchButton = ({ isPending }) => {
+  const { canSearch } = useSearchContext();
   return (
     <div className="relative">
       <div className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">

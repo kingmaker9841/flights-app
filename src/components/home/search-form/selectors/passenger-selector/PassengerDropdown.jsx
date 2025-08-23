@@ -1,18 +1,21 @@
 import PassengerCounter from "./PassengerCounter";
+import { useSearchContext } from "../../../../../context/SearchContext";
 
 const PassengerDropdown = ({
   isOpen,
   isAnimating,
-  adults,
-  setAdults,
-  children,
-  setChildren,
-  infantsSeat,
-  setInfantsSeat,
-  infantsLap,
-  setInfantsLap,
   onClose,
 }) => {
+  const {
+    adults,
+    setAdults,
+    children,
+    setChildren,
+    infantsSeat,
+    setInfantsSeat,
+    infantsLap,
+    setInfantsLap,
+  } = useSearchContext();
   if (!isOpen && !isAnimating) return null;
 
   const passengers = [

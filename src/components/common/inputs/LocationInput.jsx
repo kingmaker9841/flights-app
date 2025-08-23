@@ -5,13 +5,14 @@ import AirportDropdown from "../../home/search-form/search-results/AirportDropdo
 import LoadingSpinner from "../../home/search-form/search-inputs/multi-select-inputs/origin/LoadingSpinner";
 import MobileLocationOverlay from "./MobileLocationOverlay";
 import MultiSelectToggle from "../../home/search-form/search-inputs/multi-select-inputs/origin/MultiSelectToggle";
+import { ORIGIN_OR_DESTINATION } from "../../../config/constants";
 import SelectedItemChips from "../../home/search-form/search-inputs/multi-select-inputs/SelectedItemChips";
 import { cn } from "../../../utils/cn";
 import { createPortal } from "react-dom";
 import { useClickOutside } from "../../../hooks/useClickOutside";
 
 const LocationInput = ({
-  type = "origin", // "origin" or "destination"
+  type = ORIGIN_OR_DESTINATION.ORIGIN, // "origin" or "destination"
   value,
   onChange,
   onSelect,
@@ -98,9 +99,14 @@ const LocationInput = ({
   const getPlaceholder = () => {
     if (isLoading) return placeholder;
     if (isMultiSelect && selectedItems?.length > 0) {
-      return type === "origin" ? "Where else?" : "Where else?";
+      return type === ORIGIN_OR_DESTINATION.ORIGIN
+        ? "Where else?"
+        : "Where else?";
     }
-    return placeholder || (type === "origin" ? "Where from?" : "Where to?");
+    return (
+      placeholder ||
+      (type === ORIGIN_OR_DESTINATION.ORIGIN ? "Where from?" : "Where to?")
+    );
   };
 
   const getDisplayValue = () => {
@@ -109,7 +115,10 @@ const LocationInput = ({
     if (isFocused) {
       return value;
     } else if (selectedItems?.length > 0) {
-      const itemType = type === "origin" ? "location" : "destination";
+      const itemType =
+        type === ORIGIN_OR_DESTINATION.ORIGIN
+          ? "location"
+          : ORIGIN_OR_DESTINATION.DESTINATION;
       return `${selectedItems.length} ${itemType}${
         selectedItems.length > 1 ? "s" : ""
       } selected`;
@@ -118,7 +127,8 @@ const LocationInput = ({
     return "";
   };
 
-  const Icon = type === "origin" ? CircleIcon : LocationIcon;
+  const Icon =
+    type === ORIGIN_OR_DESTINATION.ORIGIN ? CircleIcon : LocationIcon;
 
   return (
     <div ref={containerRef} className={cn("relative", className)}>
@@ -127,8 +137,8 @@ const LocationInput = ({
           `relative rounded-[8px] min-h-[48px] border border-gray-border 
           hover:border-gray-light shadow-sm bg-gray-bg flex items-start px-3 py-2 transition-all duration-200`,
           expandOnFocus && isFocused
-            ? "shadow-[0_2px_8px_rgba(60,64,67,0.3)] ring-opacity-50 z-60 ring-1 ring-blue sm:w-[150%] w-[120%] rounded-br-none rounded-bl-none"
-            : "w-[100%]"
+            ? "shadow-[0_2px_8px_rgba(60,64,67,0.3)] ring-opacity-50 z-60 ring-1 ring-blue sm:w-[150%] w-[120%] rounded-br-none rounded-bl-none "
+            : "w-[100%] -z-0"
         )}
       >
         <Icon className="w-5 h-5 mr-2 text-text-secondary flex-shrink-0 mt-2" />

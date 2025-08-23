@@ -1,5 +1,3 @@
-import { useEffect, useRef, useState } from "react";
-
 import CustomDatePicker from "./date-picker/CustomDatePicker";
 import MulticitySection from "./MulticitySection";
 import SearchButton from "../../common/buttons/SearchButton";
@@ -7,53 +5,26 @@ import SearchControls from "./SearchControls";
 import SearchInputs from "./search-inputs/SearchInputs";
 import { cn } from "../../../utils/cn";
 import { searchFlights } from "../../../services/flightService";
-import { TRIP_TYPES, CABIN_CLASSES } from "../../../config/constants";
+import { TRIP_TYPES } from "../../../config/constants";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
-import { useNearestAirport } from "../../../hooks/useNearestAirport";
-import { getCurrentLocation } from "../../../services/geolocation";
-import { getNearByAirports } from "../../../api/airports";
-import { formatAirportForInput } from "../../../utils/airportUtils";
+import { useSearchContext } from "../../../context/SearchContext";
 
 function SearchForm() {
   const navigate = useNavigate();
-  const searchFormRef = useRef(null);
-
-  // Form state
-  const [tripType, setTripType] = useState(TRIP_TYPES.ROUND_TRIP);
-  const [departDate, setDepartDate] = useState("");
-  const [returnDate, setReturnDate] = useState("");
-  const [adults, setAdults] = useState(1);
-  const [children, setChildren] = useState(0);
-  const [infantsSeat, setInfantsSeat] = useState(0);
-  const [infantsLap, setInfantsLap] = useState(0);
-  const passengers = adults + children + infantsSeat + infantsLap;
-  const [cabin, setCabin] = useState(CABIN_CLASSES.ECONOMY);
-
-  // Multi-city state
-  const [legs, setLegs] = useState([
-    { from: "", to: "", date: "" },
-  ]);
-  const [showCustomPicker, setShowCustomPicker] = useState(false);
-  const [removingLegIndex, setRemovingLegIndex] = useState(null);
-
-  // Origin/Destination state
-  const [originInput, setOriginInput] = useState("");
-  const [originSelected, setOriginSelected] = useState(null);
-  const [originOptions, setOriginOptions] = useState([]);
-  const [showOriginOptions, setShowOriginOptions] = useState(false);
-
-  const [destInput, setDestInput] = useState("");
-  const [destSelected, setDestSelected] = useState(null);
-  const [destOptions, setDestOptions] = useState([]);
-  const [showDestOptions, setShowDestOptions] = useState(false);
-
-  // Multiselect state
-  const [selectedOriginItems, setSelectedOriginItems] = useState([]);
-  const [selectedDestItems, setSelectedDestItems] = useState([]);
-
-  const { isLoadingLocation, locationError, loadNearestAirport } =
-    useNearestAirport(originInput, originSelected);
+  const {
+    tripType,
+    searchFormRef,
+    showCustomPicker,
+    setShowCustomPicker,
+    departDate,
+    setDepartDate,
+    returnDate,
+    setReturnDate,
+    canSearch,
+    getSearchData,
+    removeMulticityLeg,
+  } = useSearchContext();
 
   const mutation = useMutation({
     mutationFn: (searchData) => searchFlights(searchData),
@@ -61,103 +32,12 @@ function SearchForm() {
     onError: (e) => console.error(e),
   });
 
-  // Auto-populate origin with nearest airport and nearby options on component mount
-  useEffect(() => {
-    const loadNearestAirportWithOptions = async () => {
-      if (originInput || originSelected) return;
-
-      try {
-        // Try to get location, but use fallback coordinates if it fails
-        let location;
-        try {
-          location = await getCurrentLocation();
-        } catch (locationError) {
-          console.log('Using fallback location (Kathmandu)');
-          location = { lat: 27.7172, lng: 85.324 };
-        }
-        
-        const nearbyData = await getNearByAirports(location.lat, location.lng);
-        console.log('Got nearby data:', nearbyData);
-        
-        if (nearbyData?.current) {
-          const formattedCurrent = formatAirportForInput(nearbyData.current);
-          setOriginSelected(formattedCurrent);
-          setOriginInput(formattedCurrent.presentation.title);
-          console.log('Set origin to:', formattedCurrent.presentation.title);
-        }
-        
-        // Set nearby airports as options for both origin and destination
-        if (nearbyData?.nearby) {
-          const formattedCurrent = formatAirportForInput(nearbyData.current);
-          const formattedNearby = nearbyData.nearby.map(formatAirportForInput).filter(Boolean);
-          const nearbyOptions = [formattedCurrent, ...formattedNearby];
-          console.log('Setting nearby options:', nearbyOptions.length, nearbyOptions);
-          setOriginOptions(nearbyOptions);
-          setDestOptions(nearbyOptions);
-        }
-      } catch (error) {
-        console.error("Failed to load nearby airports:", error);
-      }
-    };
-
-    loadNearestAirportWithOptions();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleRemoveLeg = (index) => {
-    if (legs.length <= 1) return;
-
-    setRemovingLegIndex(index);
-    setTimeout(() => {
-      const updatedLegs = [...legs];
-      updatedLegs.splice(index, 1);
-      setLegs(updatedLegs);
-      setRemovingLegIndex(null);
-    }, 300);
-  };
-
-  const canSearch = (() => {
-    if (mutation.isPending) return false;
-    
-    if (tripType === TRIP_TYPES.MULTI_CITY) {
-      return legs.every(leg => {
-        const hasFrom = leg.from && typeof leg.from === 'string' && leg.from.trim() !== '';
-        const hasTo = leg.to && typeof leg.to === 'string' && leg.to.trim() !== '';
-        const hasDate = leg.date && leg.date !== '';
-        return hasFrom && hasTo && hasDate;
-      });
-    }
-    
-    const hasOrigin = (originSelected || (originInput && originInput.trim() !== '') || selectedOriginItems.length > 0);
-    const hasDestination = (destSelected || (destInput && destInput.trim() !== '') || selectedDestItems.length > 0);
-    const hasDepartDate = departDate && departDate !== '';
-    const hasReturnDate = tripType === TRIP_TYPES.ROUND_TRIP ? (returnDate && returnDate !== '') : true;
-    
-    return hasOrigin && hasDestination && hasDepartDate && hasReturnDate;
-  })();
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!canSearch) return;
+    if (!canSearch || mutation.isPending) return;
     
-    if (tripType === TRIP_TYPES.MULTI_CITY) {
-      mutation.mutate({
-        legs,
-        passengers,
-        cabin,
-        tripType,
-      });
-    } else {
-      mutation.mutate({
-        origin: originSelected || originInput,
-        destination: destSelected || destInput,
-        departDate,
-        returnDate: tripType === TRIP_TYPES.ROUND_TRIP ? returnDate : null,
-        passengers,
-        cabin,
-        tripType,
-      });
-    }
+    const searchData = getSearchData();
+    mutation.mutate(searchData);
   };
 
   return (
@@ -177,70 +57,19 @@ function SearchForm() {
           }}
         >
           {/* Top controls: Trip type, Travelers, Cabin */}
-          <SearchControls
-            tripType={tripType}
-            setTripType={setTripType}
-            adults={adults}
-            setAdults={setAdults}
-            children={children}
-            setChildren={setChildren}
-            infantsSeat={infantsSeat}
-            setInfantsSeat={setInfantsSeat}
-            infantsLap={infantsLap}
-            setInfantsLap={setInfantsLap}
-            cabin={cabin}
-            setCabin={setCabin}
-          />
+          <SearchControls />
 
           {/* Round trip and One-way layouts */}
-          {tripType !== TRIP_TYPES.MULTI_CITY && (
-            <SearchInputs
-              tripType={tripType}
-              setTripType={setTripType}
-              originInput={originInput}
-              setOriginInput={setOriginInput}
-              originSelected={originSelected}
-              setOriginSelected={setOriginSelected}
-              originOptions={originOptions}
-              setOriginOptions={setOriginOptions}
-              showOriginOptions={showOriginOptions}
-              setShowOriginOptions={setShowOriginOptions}
-              destInput={destInput}
-              setDestInput={setDestInput}
-              destSelected={destSelected}
-              setDestSelected={setDestSelected}
-              destOptions={destOptions}
-              setDestOptions={setDestOptions}
-              showDestOptions={showDestOptions}
-              setShowDestOptions={setShowDestOptions}
-              departDate={departDate}
-              setDepartDate={setDepartDate}
-              returnDate={returnDate}
-              setReturnDate={setReturnDate}
-              searchFormRef={searchFormRef}
-              isLoadingLocation={isLoadingLocation}
-              locationError={locationError}
-              selectedOriginItems={selectedOriginItems}
-              setSelectedOriginItems={setSelectedOriginItems}
-              selectedDestItems={selectedDestItems}
-              setSelectedDestItems={setSelectedDestItems}
-            />
-          )}
+          {tripType !== TRIP_TYPES.MULTI_CITY && <SearchInputs />}
 
           {/* Multi-city flights */}
           {tripType === TRIP_TYPES.MULTI_CITY && (
-            <MulticitySection
-              legs={legs}
-              setLegs={setLegs}
-              removingLegIndex={removingLegIndex}
-              onRemoveLeg={handleRemoveLeg}
-              onDatePickerOpen={() => setShowCustomPicker(true)}
-            />
+            <MulticitySection onRemoveLeg={removeMulticityLeg} />
           )}
         </div>
 
         {/* Floating Search button */}
-        <SearchButton canSearch={canSearch} isPending={mutation.isPending} />
+        <SearchButton isPending={mutation.isPending} />
 
         {/* Custom Date Picker for multicity */}
         {tripType === TRIP_TYPES.MULTI_CITY && (

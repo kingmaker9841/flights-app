@@ -6,6 +6,7 @@ import {
 } from "../../../common/Icons";
 
 import DropdownSelect from "../../../common/DropdownSelect";
+import { useSearchContext } from "../../../../context/SearchContext";
 
 const TRIP_TYPE_OPTIONS = [
   { value: "roundtrip", label: "Round trip" },
@@ -26,7 +27,8 @@ const TripTypeIcon = ({ tripType }) => {
   }
 };
 
-function TripTypeSelector({ tripType, setTripType }) {
+function TripTypeSelector() {
+  const { tripType, setTripType } = useSearchContext();
   const renderTrigger = (value, isOpen) => (
     <>
       <TripTypeIcon tripType={value} />

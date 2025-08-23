@@ -1,8 +1,6 @@
 import HeroIllustration from "./HeroIllustration";
 import SearchForm from "../search-form/SearchForm";
-
-// import SearchForm from "../../SearchForm";
-
+import { SearchProvider } from "../../../context/SearchContext";
 
 const HeroSection = () => (
   <section className="relative bg-gray-bg px-6">
@@ -24,7 +22,9 @@ const HeroSection = () => (
     {/* Overlapping search card */}
     <div className="px-0 md:px-6 -mt-10 md:-mt-14">
       <div className="max-w-6xl md:mx-auto">
-        <SearchForm />
+        <SearchProvider>
+          <SearchForm />
+        </SearchProvider>
       </div>
     </div>
   </section>

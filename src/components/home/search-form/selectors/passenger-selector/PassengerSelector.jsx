@@ -3,20 +3,12 @@ import { ChevronDownIcon, PersonIcon } from "../../../../common/Icons";
 import PassengerDropdown from "./PassengerDropdown";
 import { useDropdown } from "../../../../../hooks/useDropdown";
 import { useMemo } from "react";
+import { useSearchContext } from "../../../../../context/SearchContext";
 
-function PassengerSelector({
-  adults,
-  setAdults,
-  children,
-  setChildren,
-  infantsSeat,
-  setInfantsSeat,
-  infantsLap,
-  setInfantsLap,
-}) {
+function PassengerSelector() {
+  const { passengers } = useSearchContext();
   const { isOpen, isAnimating, dropdownRef, toggleDropdown } = useDropdown();
 
-  const passengers = adults + children + infantsSeat + infantsLap;
   const passengerText = useMemo(() => {
     return `${passengers}`;
   }, [passengers]);
@@ -39,14 +31,6 @@ function PassengerSelector({
       <PassengerDropdown
         isOpen={isOpen}
         isAnimating={isAnimating}
-        adults={adults}
-        setAdults={setAdults}
-        children={children}
-        setChildren={setChildren}
-        infantsSeat={infantsSeat}
-        setInfantsSeat={setInfantsSeat}
-        infantsLap={infantsLap}
-        setInfantsLap={setInfantsLap}
         onClose={toggleDropdown}
       />
     </div>

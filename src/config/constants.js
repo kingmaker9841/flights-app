@@ -46,6 +46,12 @@ export const CABIN_CLASSES = {
   FIRST: "First",
 };
 
+// Origin or Destination
+export const ORIGIN_OR_DESTINATION = {
+  ORIGIN: "origin",
+  DESTINATION: "destination",
+};
+
 // Navigation Items
 export const NAVIGATION_ITEMS = [
   {

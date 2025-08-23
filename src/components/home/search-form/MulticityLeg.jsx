@@ -1,6 +1,7 @@
 import { CloseIcon } from "../../common/Icons";
 import DateInput from "../../common/inputs/DateInput";
 import LocationInput from "../../common/inputs/LocationInput";
+import { useSearchContext } from "../../../context/SearchContext";
 import { searchAirports, getNearByAirports } from "../../../api/airports";
 import { useAirportSearch } from "../../../hooks/useAirportSearch";
 import { useQuery } from "@tanstack/react-query";
@@ -8,15 +9,16 @@ import { useState, useEffect } from "react";
 import { getCurrentLocation } from "../../../services/geolocation";
 import { formatAirportForInput } from "../../../utils/airportUtils";
 
-const MulticityLeg = ({
-  leg,
-  index,
-  legs,
-  setLegs,
-  removingLegIndex,
-  onRemoveLeg,
-  onDatePickerOpen,
-}) => {
+const MulticityLeg = ({ index, onRemoveLeg }) => {
+  const {
+    legs,
+    removingLegIndex,
+    updateMulticityLeg,
+    setShowCustomPicker,
+  } = useSearchContext();
+
+  const leg = legs[index];
+
   // State for origin input
   const [originOptions, setOriginOptions] = useState([]);
   const [showOriginOptions, setShowOriginOptions] = useState(false);
@@ -124,14 +126,8 @@ const MulticityLeg = ({
     }
   };
 
-  const updateLeg = (field, value) => {
-    const updatedLegs = [...legs];
-    updatedLegs[index] = { ...updatedLegs[index], [field]: value };
-    setLegs(updatedLegs);
-  };
-
   const handleDateChange = (newDate) => {
-    updateLeg("date", newDate);
+    updateMulticityLeg(index, "date", newDate);
   };
 
   return (
@@ -148,16 +144,14 @@ const MulticityLeg = ({
           <LocationInput
             type="origin"
             value={leg.from || ""}
-            onChange={(value) => {
-              updateLeg("from", value);
-            }}
+            onChange={(value) => updateMulticityLeg(index, "from", value)}
             onSelect={(item) => {
               if (item) {
                 const selectedValue =
                   item?.presentation?.title ||
                   item?.presentation?.suggestionTitle ||
                   "";
-                updateLeg("from", selectedValue);
+                updateMulticityLeg(index, "from", selectedValue);
                 setOriginSelected(item);
               } else {
                 setOriginSelected(null);
@@ -173,10 +167,7 @@ const MulticityLeg = ({
             onMultiSelect={handleOriginMultiSelect}
             onFocus={() => setIsOriginFocused(true)}
             onBlur={() => {
-              // Don't blur if we're in mobile mode
-              if (window.innerWidth < 768) {
-                return;
-              }
+              if (window.innerWidth < 768) return;
               setTimeout(() => {
                 setIsOriginFocused(false);
                 setShowOriginOptions(false);
@@ -188,16 +179,14 @@ const MulticityLeg = ({
           <LocationInput
             type="destination"
             value={leg.to || ""}
-            onChange={(value) => {
-              updateLeg("to", value);
-            }}
+            onChange={(value) => updateMulticityLeg(index, "to", value)}
             onSelect={(item) => {
               if (item) {
                 const selectedValue =
                   item?.presentation?.title ||
                   item?.presentation?.suggestionTitle ||
                   "";
-                updateLeg("to", selectedValue);
+                updateMulticityLeg(index, "to", selectedValue);
                 setDestSelected(item);
               } else {
                 setDestSelected(null);
@@ -213,10 +202,7 @@ const MulticityLeg = ({
             onMultiSelect={handleDestMultiSelect}
             onFocus={() => setIsDestFocused(true)}
             onBlur={() => {
-              // Don't blur if we're in mobile mode
-              if (window.innerWidth < 768) {
-                return;
-              }
+              if (window.innerWidth < 768) return;
               setTimeout(() => {
                 setIsDestFocused(false);
                 setShowDestOptions(false);
@@ -231,7 +217,7 @@ const MulticityLeg = ({
           <DateInput
             date={leg.date}
             onDateChange={handleDateChange}
-            onDatePickerOpen={onDatePickerOpen}
+            onDatePickerOpen={() => setShowCustomPicker(true)}
             placeholder="Thu 4 Sept"
           />
 
@@ -258,16 +244,14 @@ const MulticityLeg = ({
         <LocationInput
           type="origin"
           value={leg.from || ""}
-          onChange={(value) => {
-            updateLeg("from", value);
-          }}
+          onChange={(value) => updateMulticityLeg(index, "from", value)}
           onSelect={(item) => {
             if (item) {
               const selectedValue =
                 item?.presentation?.title ||
                 item?.presentation?.suggestionTitle ||
                 "";
-              updateLeg("from", selectedValue);
+              updateMulticityLeg(index, "from", selectedValue);
               setOriginSelected(item);
             } else {
               setOriginSelected(null);
@@ -283,10 +267,7 @@ const MulticityLeg = ({
           onMultiSelect={handleOriginMultiSelect}
           onFocus={() => setIsOriginFocused(true)}
           onBlur={() => {
-            // Don't blur if we're in mobile mode
-            if (window.innerWidth < 768) {
-              return;
-            }
+            if (window.innerWidth < 768) return;
             setTimeout(() => {
               setIsOriginFocused(false);
               setShowOriginOptions(false);
@@ -298,16 +279,14 @@ const MulticityLeg = ({
         <LocationInput
           type="destination"
           value={leg.to || ""}
-          onChange={(value) => {
-            updateLeg("to", value);
-          }}
+          onChange={(value) => updateMulticityLeg(index, "to", value)}
           onSelect={(item) => {
             if (item) {
               const selectedValue =
                 item?.presentation?.title ||
                 item?.presentation?.suggestionTitle ||
                 "";
-              updateLeg("to", selectedValue);
+              updateMulticityLeg(index, "to", selectedValue);
               setDestSelected(item);
             } else {
               setDestSelected(null);
@@ -323,10 +302,7 @@ const MulticityLeg = ({
           onMultiSelect={handleDestMultiSelect}
           onFocus={() => setIsDestFocused(true)}
           onBlur={() => {
-            // Don't blur if we're in mobile mode
-            if (window.innerWidth < 768) {
-              return;
-            }
+            if (window.innerWidth < 768) return;
             setTimeout(() => {
               setIsDestFocused(false);
               setShowDestOptions(false);
@@ -339,7 +315,7 @@ const MulticityLeg = ({
           <DateInput
             date={leg.date}
             onDateChange={handleDateChange}
-            onDatePickerOpen={onDatePickerOpen}
+            onDatePickerOpen={() => setShowCustomPicker(true)}
             placeholder="Thu 4 Sept"
             className="flex-1"
           />
